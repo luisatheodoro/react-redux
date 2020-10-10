@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount, unmount } from 'enzyme';
+import {mount, unmount} from 'enzyme';
 import CommentBox from "components/CommentBox";
 
 let wrapped;
@@ -17,10 +17,25 @@ it('has a text area and a button', () => {
     expect(wrapped.find('button').length).toEqual(1);
 });
 
-it('has a text area that users can type in', () => {
-    wrapped.find('textarea').simulate('change', {
-        target: { value: 'new comment' }
-    });
-    wrapped.update();
-    expect(wrapped.find('textarea').prop('value')).toEqual('new comment');
+describe('the text area', () => {
+
+    beforeEach(() => {
+        wrapped.find('textarea').simulate('change', {
+            target: {value: 'new comment'}
+        });
+        wrapped.update();
+    })
+
+    it('has a text area that users can type in', () => {
+        expect(wrapped.find('textarea').prop('value')).toEqual('new comment');
+    })
+
+    it('submits a form and empties the input field', () => {
+        wrapped.find('form').simulate('submit', {
+            preventDefault: () => {
+            }
+        });
+        wrapped.update();
+        expect(wrapped.find('textarea').prop('value')).toEqual('');
+    })
 })
