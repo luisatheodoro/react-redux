@@ -1,5 +1,5 @@
 import React from 'react';
-import {mount, unmount} from 'enzyme';
+import {mount} from 'enzyme';
 import CommentBox from "components/CommentBox";
 import Root from 'Root';
 
