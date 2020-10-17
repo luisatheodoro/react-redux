@@ -4,29 +4,43 @@ const bcrypt = require('bcrypt-nodejs');
 
 //Define our model
 const userSchema = new Schema({
-  email: {
-    type: String,
-    unique: true,
-    lowercase: true,
-    require: true
-  },
-  password: { type: String, require: true }
+    email: {
+        type: String,
+        unique: true,
+        lowercase: true,
+        require: true
+    },
+    password: {type: String, require: true}
 });
 
 //On save hook, encrypt password
 userSchema.pre('save', function (next) {
-  const user = this;
-  
-  bcrypt.genSalt(10, function (err, salt) {
-    if (err) { return next(err); }
+    const user = this;
 
-    bcrypt.hash(user.password, salt, null, function (err, hash) {
-      if (err) { return next(err); }
-      user.password = hash;
-      next()
+    bcrypt.genSalt(10, function (err, salt) {
+        if (err) {
+            return next(err);
+        }
+
+        bcrypt.hash(user.password, salt, null, function (err, hash) {
+            if (err) {
+                return next(err);
+            }
+            user.password = hash;
+            next()
+        })
     })
-  })
 })
+
+//whenever we create a user screme we will have access to whatever we have inside methods.
+userSchema.methods.comparePassword = function (canditatePassword, callback) {
+    bcrypt.compare(canditatePassword, this.password, function (err, isMatch) {
+        if (err) {
+            return callback(err)
+        }
+        callback(null, isMatch);
+    })
+}
 
 //Create the model class
 const ModelClass = mongoose.model('user', userSchema);
