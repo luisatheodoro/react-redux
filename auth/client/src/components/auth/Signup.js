@@ -1,10 +1,16 @@
 import React, {Component} from "react";
 import {reduxForm, Field} from "redux-form";
+import {compose} from 'redux';
+import {connect} from 'react-redux';
+import * as actions from "../../actions";
 
 class Signup extends Component {
 
     onSubmit = (formProps) => {
-        console.log(formProps)
+        this.props.signup(formProps, () => {
+            this.props.history.push('/feature');
+        });
+
     }
 
     render() {
@@ -30,10 +36,25 @@ class Signup extends Component {
                         autoComplete='none'
                     />
                 </fieldset>
+                <div>
+                    {this.props.errorMessage}
+                </div>
                 <button>Sign Up!</button>
             </form>
         )
     }
 }
 
-export default reduxForm({form: 'signup'})(Signup);
+function mapStateToProps(state) {
+    return {
+        errorMessage: state.auth.errorMessage
+    };
+}
+
+export default compose(
+    connect(mapStateToProps, actions),
+    reduxForm({form: 'signup'})
+)(Signup);
+
+//Compose allows us to apply multiple higher order components to a single component
+//With a much attractive syntax. Inside we can pass as many higher order components as we wish.
