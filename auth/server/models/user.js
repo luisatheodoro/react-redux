@@ -32,7 +32,7 @@ userSchema.pre('save', function (next) {
     })
 })
 
-//whenever we create a user screme we will have access to whatever we have inside methods.
+//whenever we create a user schema we will have access to whatever we have inside methods.
 userSchema.methods.comparePassword = function (canditatePassword, callback) {
     bcrypt.compare(canditatePassword, this.password, function (err, isMatch) {
         if (err) {

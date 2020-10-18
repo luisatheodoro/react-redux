@@ -37,19 +37,18 @@ const localLogin = new LocalStrategy(localOptions, function (email, password, do
 const jwtOptions = {
     //in this case we are saying to look at the request header with the name authorization
     jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-    //we also need to tell it the secrete to decode the token in the payload.
+    //we also need to tell it the secret to decode the token in the payload.
     secretOrKey: process.env.JWTSECRET
 };
 
 //Create JWT strategy
 const jwtLogin = new JwtStrategy(jwtOptions, function (payload, done) {
-    // see if the user id in the paylod exists in our database, if it does call done with that user
+    // see if the user id in the payload exists in our database, if it does call done with that user
     //otherwise call done without a user object
     User.findById(payload.sub, function (err, user) {
         if (err) {
             return done(err, false);
         }
-
         if (user) {
             done(null, user);
         } else {
@@ -58,6 +57,5 @@ const jwtLogin = new JwtStrategy(jwtOptions, function (payload, done) {
     });
 });
 
-//Tell passport to use this strategy
 passport.use(jwtLogin);
 passport.use(localLogin);

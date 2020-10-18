@@ -1,4 +1,5 @@
 const Authentication = require('./controllers/authentication');
+const User = require('./controllers/user');
 const passportService = require('./services/passport');
 const passport = require('passport');
 
@@ -10,7 +11,13 @@ module.exports = function(app) {
     res.send({hi: 'there'});
   });
 
-  app.post('/signin', requireSignin, Authentication.signin);
+  app.get('/users', requireAuth, User.users);
+
+  app.get('/users/:id', requireAuth, User.user);
+
+  app.post('/signin',
+      requireSignin,
+      Authentication.signin);
 
   app.post('/signup', Authentication.signup);
 }
